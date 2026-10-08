@@ -1,370 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Fall Trip">
-<meta name="theme-color" content="#2a1a12">
-<title>Fall Foliage Trip App — Oct 15-18, 2026</title>
-<style>
-:root{--rust:#c2542b;--rustl:#f6e6dd;--olive:#5c6e4f;--ink:#1e1e22;--sub:#6b6b73;--bg:#fbf8f4;--white:#fff;--line:#ece4da}
-*{-webkit-text-size-adjust:100%;margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.6;font-size:15.5px}
-h1,h2,h3{font-weight:700}
-a{color:var(--rust)}
-.wrap{max-width:940px;margin:0 auto;padding:0 16px}
-.hero{background:linear-gradient(120deg,#2a1a12,#5b2e18 60%,#8a4520);color:#fff;padding:54px 16px 46px;text-align:center}
-.hero .pill{display:inline-block;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:6px 18px;margin-bottom:18px}
-.hero h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.15;margin-bottom:12px;font-weight:800}
-.hero h1 em{color:#f0b087;font-style:normal}
-.hero p{color:#e8d9cc;max-width:640px;margin:0 auto 22px;font-size:.95rem}
-.count{font-size:1.6rem;font-weight:800;color:#f0b087;margin-bottom:24px}
-.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:760px;margin:0 auto}
-.bento div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:12px 6px}
-.bento b{display:block;font-size:1.2rem;color:#f0b087}
-.bento span{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:#cdbfb2}
-section{padding:44px 0 8px}
-.eyebrow{color:var(--rust);font-size:.72rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
-h2{font-size:1.6rem;margin-bottom:6px}
-.lede{color:var(--sub);font-size:.92rem;margin-bottom:20px}
-.mapcard{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:18px 10px 10px;box-shadow:0 10px 30px rgba(70,40,20,.07)}
-.mscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
-.mscroll svg{display:block;width:100%;min-width:680px}
-.play{display:block;margin:12px auto 6px;background:var(--rust);color:#fff;border:none;font-weight:700;padding:14px 36px;min-height:48px;border-radius:30px;cursor:pointer;font-size:.95rem}
-.play:active{background:#a8451f}
-.legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;font-size:.8rem;color:var(--sub);padding-bottom:6px}
-.sl{font-size:13px;fill:var(--ink);font-weight:700}
-.ss{font-size:10.5px;fill:#96907f}
-.hint{font-size:.85rem;color:var(--rust);text-align:center;margin-top:4px;font-weight:600}
-svg a{cursor:pointer}
-.dotc{stroke-width:4}
-svg a:hover .dotc,svg a:active .dotc{stroke-width:6}
-.tl{border-left:2px solid var(--line);margin-left:8px}
-.day{position:relative;padding:0 0 6px 26px;margin-bottom:20px}
-.day::before{content:'';position:absolute;left:-9px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--rust);box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--rust)}
-.day .when{font-size:.72rem;font-weight:800;letter-spacing:1.5px;color:var(--rust);text-transform:uppercase}
-.day h3{font-size:1.25rem;margin:2px 0 12px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px 16px;box-shadow:0 6px 22px rgba(70,40,20,.06)}
-.row{display:flex;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.93rem}
-.row:last-child{border:none}
-.row .t{width:88px;flex-shrink:0;font-weight:800;color:var(--olive);font-size:.8rem}
-.row a, .quote a{text-decoration:underline}
-.stay{background:#f4f7f0;border:1px solid #dfe7d8;border-radius:12px;padding:12px 16px;margin-top:14px;font-size:.88rem}
-.stay b{color:var(--olive)}
-.stay code{background:#e3ead9;padding:1px 7px;border-radius:6px;font-size:.85rem;display:inline-block;margin-top:4px}
-.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;min-width:640px;border-collapse:collapse;background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(70,40,20,.06)}
-th{background:var(--ink);color:#fff;text-align:left;font-size:.72rem;letter-spacing:1.2px;text-transform:uppercase;padding:12px 14px}
-td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:.88rem;vertical-align:top}
-tr:last-child td{border:none}
-.money{color:var(--olive);font-weight:800;white-space:nowrap}
-tr.total td{background:var(--rustl);font-weight:800}
-.check{list-style:none}
-.check li{display:flex;gap:12px;padding:9px 4px;border-bottom:1px dashed var(--line);font-size:.94rem;min-height:44px;align-items:center}
-.check li::before{content:'\2610';color:var(--rust);font-size:1.3rem;line-height:1.1;flex-shrink:0}
-.check li.done{opacity:.45;text-decoration:line-through}
-.check li.done::before{content:'\2705'}
-.check li:last-child{border:none}
-.packgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.pack{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 5px 18px rgba(70,40,20,.05)}
-.pack h4{font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--rust);margin-bottom:6px}
-.quote{background:#faf4ef;border-left:4px solid var(--rust);border-radius:0 12px 12px 0;padding:14px 16px;margin:12px 0;font-size:.9rem;font-style:italic;color:#7a5138}
-.warn{background:#fdf0ed;border:1px solid #f0d5ca;border-radius:12px;padding:14px 16px;font-size:.9rem;margin-top:12px}
-footer{margin-top:56px;background:var(--ink);color:#93887c;text-align:center;padding:28px 16px 34px;font-size:.83rem}
-footer b{color:#f0b087}
-@media(max-width:640px){
-  .hero{padding:44px 14px 38px}
-  .bento{grid-template-columns:repeat(2,1fr)}
-  .row{flex-direction:row;gap:10px}
-  .row .t{width:70px;font-size:.76rem}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍁 Fall Foliage & Birthday Trip 2026 | Emon & Tammi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #c2410c;
+      --primary-dark: #9a3412;
+      --primary-light: #ffedd5;
+      --accent: #d97706;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success-bg: #ecfdf5;
+      --success-text: #047857;
+      --pink-bg: #fdf2f8;
+      --pink-border: #f472b6;
+      --pink-text: #831843;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 90px;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--success-bg);
+      color: var(--success-text);
+      padding: 4px 10px;
+      border-radius: 99px;
+      border: 1px solid #a7f3d0;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #7c2d12 0%, #c2410c 55%, #ea580c 100%);
+      color: #ffffff;
+      padding: 34px 20px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "🍁";
+      position: absolute;
+      right: -15px;
+      bottom: -20px;
+      font-size: 130px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.22);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      font-size: 14px;
+      opacity: 0.92;
+      max-width: 500px;
+    }
+
+    .menu-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 14px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+      position: sticky;
+      top: 53px;
+      z-index: 999;
+    }
+    .menu-bar::-webkit-scrollbar { display: none; }
+
+    .menu-pill {
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 7px 13px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    .menu-pill:hover, .menu-pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 18px 16px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 26px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .day-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .day-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .day-badge {
+      background: #fed7aa;
+      color: #7c2d12;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .timeline {
+      position: relative;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 28px;
+      padding-bottom: 22px;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 24px;
+      bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+
+    .timeline-item:last-child::before {
+      display: none;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid var(--primary);
+    }
+
+    .timeline-dot.highlight {
+      border-color: #ec4899;
+      background: #fdf2f8;
+    }
+
+    .time {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1px;
+      margin-bottom: 3px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .highlight-box {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .highlight-pink {
+      background: var(--pink-bg);
+      border: 1px dashed var(--pink-border);
+      color: var(--pink-text);
+    }
+
+    .code-badge {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: monospace;
+      color: #1e293b;
+      margin-top: 4px;
+    }
+
+    .btn-maps {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      margin-top: 6px;
+      background: #eff6ff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #bfdbfe;
+    }
+
+    .table-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-row:last-child {
+      border-bottom: none;
+    }
+
+    .table-main {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .table-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .phone-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--primary);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .check-item.done {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+
+    .check-item.done .check-box {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: #ffffff;
+    }
+  </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="pill">Emon's Trip App · All Bookings Locked</div>
-  <h1>Four Days in the <em>Fall Colors</em><br>Oct 15 - 18, 2026</h1>
-  <p>Queens → North Conway → Foliage Train → Littleton → Mount Washington Summit → Stowe → Home by Sunday 6:10 PM</p>
-  <div class="count" id="countdown">—</div>
-  <div class="bento">
-    <div><b>$1,500</b><span>Total Budget</span></div>
-    <div><b>4/4</b><span>Bookings Done</span></div>
-    <div><b>~830</b><span>Miles</span></div>
-    <div><b>1</b><span>Birthday 🎂</span></div>
-  </div>
-</header>
-
-<div class="wrap">
-
-<section id="route">
-  <div class="eyebrow">01 — Route</div>
-  <h2>Watch Your Car Drive the Plan</h2>
-  <p class="lede">The car drives automatically. Tap any stop dot — each opens Google Maps for that exact leg. (On iPhone, swipe the map sideways to see all stops.)</p>
-  <div class="mapcard">
-    <div class="mscroll">
-      <svg viewBox="0 0 960 280" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <path id="rp" d="M 60 215 C 200 200 290 140 400 128 L 445 124 C 470 122 478 80 520 74 L 560 70 C 600 65 610 40 660 40 L 700 43 C 745 46 780 95 830 118 C 870 135 890 175 900 215"
-          fill="none" stroke="#ded5c7" stroke-width="5" stroke-dasharray="1 10" stroke-linecap="round"/>
-        <path id="rd" d="M 60 215 C 200 200 290 140 400 128 L 445 124 C 470 122 478 80 520 74 L 560 70 C 600 65 610 40 660 40 L 700 43 C 745 46 780 95 830 118 C 870 135 890 175 900 215"
-          fill="none" stroke="#c2542b" stroke-width="4" stroke-linecap="round"/>
-        <g id="stops"></g><text id="car" font-size="34">🚗</text>
-      </svg>
+  <div class="top-nav">
+    <div class="brand">
+      <span>🍁</span> Emon & Tammi's Trip
     </div>
-    <p class="hint">☝️ Tap any dot to open its Google Maps route</p>
-    <button class="play" onclick="drive()">▶ &nbsp;Replay the Drive</button>
-    <div class="legend"><span>🏠 Home</span><span>🏨 Hotel</span><span>🚂 Train</span><span>⛰ Mt Washington</span><span>🍁 Stowe</span></div>
+    <div class="status-badge">All Confirmed ✅</div>
   </div>
-</section>
 
-<section id="bookings">
-  <div class="eyebrow">02 — Locked In</div>
-  <h2>Your Booking Record</h2>
-  <p class="lede">Everything paid or reserved. All hotels pay-at-property with free cancellation — re-check prices Oct 12. (Swipe table sideways on phone.)</p>
-  <div class="twrap">
-  <table>
-    <tr><th>Booking</th><th>Details</th><th>Confirm #</th><th>Price</th></tr>
-    <tr><td>🚂 <b>Foliage Train</b></td><td>Mountaineer · Fri Oct 16 · 9:00 AM-1:00 PM · <b>arrive 8:30 AM</b> · will-call window · 📞 (603) 356-5251</td><td>384145106</td><td class="money">$175.96 paid</td></tr>
-    <tr><td>🏨 <b>Swiss Chalets Inn</b></td><td>Oct 15-16 · in 3 PM / out 11 AM · breakfast incl. · <b>birthday surprise arranged</b> · 📞 (603) 356-7332 · 457 NH Rt 16A, North Conway</td><td>5906.370.408 · PIN 2532</td><td class="money">$150.82</td></tr>
-    <tr><td>🏨 <b>Eastgate Inn</b></td><td>Oct 16-17 · in 3 PM / out 10 AM · Littleton · arrive ~7:40 PM (key held) · 📞 (603) 444-3971 · 335 Cottage St</td><td>72079947384592</td><td class="money">$150.82</td></tr>
-    <tr><td>🏨 <b>Super 8 WRJ</b></td><td>Oct 17-18 · in 2 PM / out 11 AM · I-91 Exit 11 · 442 North Hartland Rd</td><td>72079947861392</td><td class="money">$197.01</td></tr>
-    <tr><td>🚗 <b>Rental Car</b></td><td>Priceline #178-376-936-26 · Pick up Thu 7:30 AM · <b>unlimited miles</b> · deposit hold needed</td><td>due at pickup</td><td class="money">$391.62</td></tr>
-    <tr class="total"><td colspan="3"><b>BOOKED TOTAL</b></td><td class="money">$1,066.23 · only $175.96 charged so far</td></tr>
-  </table>
+  <div class="hero">
+    <div class="hero-tag">Oct 15 – Oct 18, 2026 • 4 Days</div>
+    <h1>Fall Foliage & Birthday Master Route</h1>
+    <p>Queens, NY ➔ White Mountains (NH) ➔ Green Mountains (VT) ➔ Queens</p>
   </div>
-</section>
 
-<section id="days">
-  <div class="eyebrow">03 — Minute-by-Minute</div>
-  <h2>Full Schedule — Wake Up to Sleep</h2>
-  <p class="lede">Every stop, every meal, every parking spot. 🧭 = tap for live Google Maps.</p>
-  <div class="tl">
+  <div class="menu-bar">
+    <a href="#day1" class="menu-pill active">Day 1: Surprise 🎂</a>
+    <a href="#day2" class="menu-pill">Day 2: Train 🚂</a>
+    <a href="#day3" class="menu-pill">Day 3: Vermont 🍂</a>
+    <a href="#day4" class="menu-pill">Day 4: Gorge & Home 🏡</a>
+    <a href="#hotels" class="menu-pill">Hotels & Tickets 📋</a>
+    <a href="#pack" class="menu-pill">Checklist 🎒</a>
+  </div>
 
-  <div class="day"><div class="when">Day 1 · Thu Oct 15 · Birthday Day · 330 mi</div>
-    <h3>Queens → North Conway (The Surprise)</h3>
+  <div class="container">
+
+    <div class="section-title">📅 Master Timeline & What To Do</div>
+    
+    <!-- DAY 1 -->
+    <div class="card" id="day1">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 1: Thursday, Oct 15</div>
+          <div class="day-sub">Queens ➔ North Conway & Birthday Surprise</div>
+        </div>
+        <div class="day-badge">Night 1: NH</div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">6:30 AM – 7:00 AM</div>
+          <div class="item-title">Depart Jamaica, Queens, NY</div>
+          <div class="item-desc">
+            Drive north along I-95 / I-91 / Route 16 into New Hampshire (~5.5 hrs). Quick breakfast stop along the way.
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">12:00 PM – 1:00 PM</div>
+          <div class="item-title">Shaw's Birthday Delivery at Motel Desk</div>
+          <div class="item-desc">
+            Fresh 4" chocolate cake ("HBD My Love ❤️"), 6 roses, and metallic candles delivered to Swiss Chalets and refrigerated.
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot highlight"></div>
+          <div class="time">2:00 PM – 2:30 PM</div>
+          <div class="item-title">Check-in at Swiss Chalets Village Inn</div>
+          <div class="item-desc">
+            457 NH Route 16A, North Conway. Confirm front desk has your Amazon box (delivered Oct 13) and Shaw's cake safely in back office.
+          </div>
+          <div class="code-badge">Booking: 5906.370.408 | PIN: 2532</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">2:30 PM – 4:30 PM</div>
+          <div class="item-title">North Conway Village Outing</div>
+          <div class="item-desc">
+            Take Tammi for hot drinks, browse Zeb's General Store, and view Cathedral Ledge while the motel room is secretly prepped.
+          </div>
+          <a href="https://maps.google.com/?q=Zebs+General+Store+North+Conway+NH" target="_blank" class="btn-maps">📍 Open Zeb's in Maps</a>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot highlight"></div>
+          <div class="time">4:30 PM – 5:00 PM</div>
+          <div class="item-title">The Big Room Surprise Reveal 🎈✨</div>
+          <div class="item-desc">
+            Walk into Room 6 decorated with black & gold Happy Birthday banner, warm fairy lights, fresh roses, and chilled chocolate cake.
+          </div>
+          <div class="highlight-box highlight-pink">
+            <strong>🎉 Birthday Moment:</strong> Light the metallic candle, take anniversary/birthday photos, and celebrate!
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">6:30 PM</div>
+          <div class="item-title">Birthday Dinner in North Conway</div>
+          <div class="item-desc">
+            Dinner at Delaney's Hole in the Wall or Muddy Moose Restaurant. Rest early for tomorrow's 9:00 AM train!
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="card" id="day2">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 2: Friday, Oct 16</div>
+          <div class="day-sub">Mountaineer Train, Kancamagus & Franconia</div>
+        </div>
+        <div class="day-badge">Night 2: NH</div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot highlight"></div>
+          <div class="time">8:30 AM</div>
+          <div class="item-title">Arrive at Conway Scenic Depot</div>
+          <div class="item-desc">
+            38 Norcross Circle, North Conway. Pick up your Will-Call paper tickets with photo ID at the station window.
+          </div>
+          <div class="code-badge">Train Booking: #384145106</div>
+          <br>
+          <a href="https://maps.google.com/?q=38+Norcross+Circle+North+Conway+NH" target="_blank" class="btn-maps">📍 Open Depot in Maps</a>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot highlight"></div>
+          <div class="time">9:00 AM – 1:00 PM</div>
+          <div class="item-title">The Mountaineer Excursion (Crawford Notch)</div>
+          <div class="item-desc">
+            Iconic 4-hour scenic train ride traversing high above the White Mountains, across Frankenstein Trestle & Willey Brook Bridge at peak color.
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">1:30 PM – 3:30 PM</div>
+          <div class="item-title">Drive Kancamagus Highway (Route 112)</div>
+          <div class="item-desc">
+            Drive New England's most famous foliage byway. Stops: Albany Covered Bridge, Lower Falls, and Sugar Hill Scenic Overlook.
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">3:45 PM – 4:45 PM</div>
+          <div class="item-title">Artists Bluff & Echo Lake (Franconia Notch)</div>
+          <div class="item-desc">
+            Iconic cliffside overlook above Echo Lake and Cannon Mountain (the classic New Hampshire view from the video!).
+          </div>
+          <a href="https://maps.google.com/?q=Artists+Bluff+Trailhead+Franconia+NH" target="_blank" class="btn-maps">📍 Open Artists Bluff in Maps</a>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">5:30 PM</div>
+          <div class="item-title">Check-in at Eastgate Inn (Littleton, NH)</div>
+          <div class="item-desc">
+            335 Cottage St, Littleton, NH. Walk charming Main Street Littleton (Chutters candy counter & River Covered Bridge).
+          </div>
+          <div class="code-badge">Expedia Itinerary: 72079947384592</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="card" id="day3">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 3: Saturday, Oct 17</div>
+          <div class="day-sub">Stowe, Smugglers' Notch & Woodstock, VT</div>
+        </div>
+        <div class="day-badge">Night 3: VT</div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">8:30 AM – 10:30 AM</div>
+          <div class="item-title">Smugglers' Notch Pass (Route 108)</div>
+          <div class="item-desc">
+            Drive through the dramatic mountain gap between Mount Mansfield and Spruce Peak with towering golden trees.
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">10:30 AM – 1:00 PM</div>
+          <div class="item-title">Stowe Village & Cold Hollow Cider Mill</div>
+          <div class="item-desc">
+            Photo stop at Stowe Community Church overlook. Fresh warm apple cider donuts and maple cider at Cold Hollow in Waterbury.
+          </div>
+          <a href="https://maps.google.com/?q=Cold+Hollow+Cider+Mill+Waterbury+VT" target="_blank" class="btn-maps">📍 Open Cold Hollow in Maps</a>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">2:00 PM – 4:30 PM</div>
+          <div class="item-title">Woodstock Village & Sugarbush Farm</div>
+          <div class="item-desc">
+            Stroll Middle Covered Bridge in Woodstock and visit Sugarbush Farm for maple sugarhouse walkthroughs and aged cheddar cheese tastings.
+          </div>
+          <a href="https://maps.google.com/?q=Sugarbush+Farm+Woodstock+VT" target="_blank" class="btn-maps">📍 Open Sugarbush Farm in Maps</a>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">5:00 PM</div>
+          <div class="item-title">Check-in at Super 8 White River Junction</div>
+          <div class="item-desc">
+            442 North Hartland Rd, White River Junction, VT (just 15 mins from Woodstock). Relaxed dinner nearby.
+          </div>
+          <div class="code-badge">Expedia Itinerary: 72079947861392</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="card" id="day4">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 4: Sunday, Oct 18</div>
+          <div class="day-sub">Quechee Gorge & Scenic Drive Home</div>
+        </div>
+        <div class="day-badge">Home</div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">9:30 AM – 11:30 AM</div>
+          <div class="item-title">Quechee Gorge Walk & Cabot Store</div>
+          <div class="item-desc">
+            Walk across the bridge over "Vermont's Little Grand Canyon" (165 ft deep gorge) and browse Vermont maple products at the Quechee Village stores.
+          </div>
+          <a href="https://maps.google.com/?q=Quechee+Gorge+Bridge+VT" target="_blank" class="btn-maps">📍 Open Quechee in Maps</a>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="time">12:00 PM</div>
+          <div class="item-title">Scenic Drive Home to Queens, NY</div>
+          <div class="item-desc">
+            Relaxed ~4.5 hour drive south down I-91 / I-95 back to Queens with unforgettable fall memories and photos!
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DIRECTORY & CONTACTS -->
+    <div class="section-title" id="hotels">📋 Confirmed Bookings & Directory</div>
+    
     <div class="card">
-      <div class="row"><div class="t">6:30 AM</div><div>⏰ Wake up, shower, final bag check vs packing list below.</div></div>
-      <div class="row"><div class="t">7:00 AM</div><div>Breakfast at home.</div></div>
-      <div class="row"><div class="t">7:30 AM</div><div>Pick up rental car (Priceline #178-376-936-26, pay $391.62 there). Photograph all 4 sides; test USB chargers.</div></div>
-      <div class="row"><div class="t">8:00 AM</div><div>🚗 <a href="https://www.google.com/maps/dir/?api=1&origin=87-36+165th+St+Jamaica+NY+11432&destination=Swiss+Chalets+Village+Inn+North+Conway+NH" target="_blank">🧭 Leave home → Swiss Chalets</a> (~330 mi).</div></div>
-      <div class="row"><div class="t">11:00 AM</div><div>Pit stop CT service plaza on I-95 — 10 min.</div></div>
-      <div class="row"><div class="t">12:45 PM</div><div>Lunch Worcester/Leominster, MA — 30 min max.</div></div>
-      <div class="row"><div class="t">2:00 PM</div><div>🎂 <b>Secret stop:</b> <a href="https://www.google.com/maps/search/?api=1&query=Shaws+North+Conway+NH" target="_blank">Shaw's supermarket</a> — buy cake, collect flowers/balloons. Wife waits in car.</div></div>
-      <div class="row"><div class="t">2:20 PM</div><div>🤫 Bring items to <b>Swiss Chalets front desk</b> — staff places them in the room. Free parking.</div></div>
-      <div class="row"><div class="t">3:00 PM</div><div>Check in together → <b>ROOM REVEAL</b> 🎥</div></div>
-      <div class="row"><div class="t">3:30 PM</div><div>Rest, cake + coffee in the room.</div></div>
-      <div class="row"><div class="t">5:00 PM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Swiss+Chalets+Village+Inn+North+Conway&destination=Cathedral+Ledge+North+Conway" target="_blank">🧭 Cathedral Ledge</a> — free drive-up summit lot.</div></div>
-      <div class="row"><div class="t">5:45 PM</div><div>📸 Golden hour + tripod shots.</div></div>
-      <div class="row"><div class="t">6:20 PM</div><div><a href="https://www.google.com/maps/search/?api=1&query=Vito+Marcellos+Italian+Bistro+45+Seavey+St+North+Conway+NH" target="_blank">🧭 Vito Marcello's</a> — park Seavey St or free lot behind Main St.</div></div>
-      <div class="row"><div class="t">6:30 PM</div><div>🍝 Birthday dinner — candle dessert ~8 PM.</div></div>
-      <div class="row"><div class="t">8:30 PM</div><div>Slow walk through the village.</div></div>
-      <div class="row"><div class="t">9:30 PM</div><div>Back to hotel → sleep by 10:30.</div></div>
-      <div class="stay">🏨 <b>Sleep:</b> Swiss Chalets · Conf <code>5906.370.408</code> · leave tomorrow 8:05 AM</div>
-    </div>
-  </div>
+      <div class="table-row">
+        <div>
+          <div class="table-main">Swiss Chalets Village Inn (Night 1)</div>
+          <div class="table-sub">457 NH Route 16A, North Conway, NH</div>
+          <div class="code-badge">Conf: 5906.370.408 (PIN 2532)</div>
+        </div>
+        <a href="tel:16033567332" class="phone-btn">📞 Call</a>
+      </div>
 
-  <div class="day"><div class="when">Day 2 · Fri Oct 16 · Train Day · ~105 mi</div>
-    <h3>Mountaineer → Kancamagus → Littleton</h3>
+      <div class="table-row">
+        <div>
+          <div class="table-main">Conway Scenic Railroad (Train)</div>
+          <div class="table-sub">38 Norcross Circle, North Conway, NH</div>
+          <div class="code-badge">Booking: #384145106</div>
+        </div>
+        <a href="tel:16033565251" class="phone-btn">📞 Call</a>
+      </div>
+
+      <div class="table-row">
+        <div>
+          <div class="table-main">Eastgate Inn (Night 2)</div>
+          <div class="table-sub">335 Cottage St, Littleton, NH</div>
+          <div class="code-badge">Expedia: 72079947384592</div>
+        </div>
+        <a href="tel:16034443971" class="phone-btn">📞 Call</a>
+      </div>
+
+      <div class="table-row">
+        <div>
+          <div class="table-main">Super 8 White River Jct (Night 3)</div>
+          <div class="table-sub">442 North Hartland Rd, White River Jct, VT</div>
+          <div class="code-badge">Expedia: 72079947861392</div>
+        </div>
+        <a href="tel:18022957349" class="phone-btn">📞 Call</a>
+      </div>
+    </div>
+
+    <!-- PACKING CHECKLIST -->
+    <div class="section-title" id="pack">🎒 Road Trip Checklist</div>
+
     <div class="card">
-      <div class="row"><div class="t">6:15 AM</div><div>⏰ Wake up — non-negotiable.</div></div>
-      <div class="row"><div class="t">6:45 AM</div><div>Free hotel breakfast (your big meal).</div></div>
-      <div class="row"><div class="t">7:40 AM</div><div>Checkout, load the car.</div></div>
-      <div class="row"><div class="t">8:05 AM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Swiss+Chalets+Village+Inn+North+Conway&destination=Conway+Scenic+Railroad+38+Norcross+Circle+North+Conway+NH" target="_blank">🧭 Conway Scenic Railroad</a> — leave by 8:05!</div></div>
-      <div class="row"><div class="t">8:20 AM</div><div>🅿️ Station lot tiny — free village lots/on-street, 3-min walk.</div></div>
-      <div class="row"><div class="t">8:30 AM</div><div>Will-call: <b>Emon Miah, booking 384145106</b>. Board 8:45.</div></div>
-      <div class="row"><div class="t">9:00 AM</div><div>🚂 Mountaineer — right side westbound. Cooler stays in trunk.</div></div>
-      <div class="row"><div class="t">1:00 PM</div><div>Return → quick village lunch $15-20.</div></div>
-      <div class="row"><div class="t">2:15 PM</div><div>⛽ FILL TANK in Conway — <b>no gas for 34 miles on The Kanc.</b></div></div>
-      <div class="row"><div class="t">2:30 PM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=North+Conway+NH&destination=Lincoln+NH&waypoints=Lower+Falls+Scenic+Area+NH,Albany+Covered+Bridge+NH,Rocky+Gorge+NH" target="_blank">🧭 The Kanc pre-loaded</a> ↓</div></div>
-      <div class="row"><div class="t">2:40 PM</div><div>🍁 Lower Falls — big lot right side, 15 min.</div></div>
-      <div class="row"><div class="t">3:15 PM</div><div>🌉 Albany Covered Bridge — gravel lot.</div></div>
-      <div class="row"><div class="t">4:00 PM</div><div>💧 Sabbaday Falls — marked lot, $5 pass, 15-min walk.</div></div>
-      <div class="row"><div class="t">4:45 PM</div><div>🏞 Rocky Gorge — small lot LEFT (easy to miss).</div></div>
-      <div class="row"><div class="t">5:50 PM</div><div>🌅 Hancock Overlook — big lot, sunset = shot of the day.</div></div>
-      <div class="row"><div class="t">6:30 PM</div><div>Lincoln — dinner <a href="https://www.google.com/maps/search/?api=1&query=Woodstock+Station+Inn+Brewery+NH" target="_blank">Woodstock Station</a> or pizza (~$12-18).</div></div>
-      <div class="row"><div class="t">7:10 PM</div><div>I-93 N through Franconia Notch at dusk.</div></div>
-      <div class="row"><div class="t">7:40 PM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Lincoln+NH&destination=Eastgate+Inn+Littleton+NH" target="_blank">Eastgate Inn</a> — park at room door. Sleep 10:30.</div></div>
-      <div class="stay">🏨 <b>Sleep:</b> Eastgate Inn · Conf <code>72079947384592</code> · checkout 10 AM</div>
+      <div class="check-grid">
+        <div class="check-item done"><div class="check-box">✓</div> Amazon Room Kit (Delivers Oct 13 to Hotel)</div>
+        <div class="check-item done"><div class="check-box">✓</div> Instacart Cake & Roses (Delivers Oct 15 @ 12PM)</div>
+        <div class="check-item"><div class="check-box" onclick="this.parentElement.classList.toggle('done')">✓</div> Lighter / Matches (for birthday candle)</div>
+        <div class="check-item"><div class="check-box" onclick="this.parentElement.classList.toggle('done')">✓</div> 4 AA / AAA Batteries (for fairy lights)</div>
+        <div class="check-item"><div class="check-box" onclick="this.parentElement.classList.toggle('done')">✓</div> Small Knife, 2 Forks & Plates (for cake)</div>
+        <div class="check-item"><div class="check-box" onclick="this.parentElement.classList.toggle('done')">✓</div> Driver's License / Photo ID (for Train Will-Call)</div>
+        <div class="check-item"><div class="check-box" onclick="this.parentElement.classList.toggle('done')">✓</div> Warm Jackets & Sweaters (mountain morning temps 35-45°F)</div>
+        <div class="check-item"><div class="check-box" onclick="this.parentElement.classList.toggle('done')">✓</div> Phone Car Charger & Mount</div>
+      </div>
     </div>
-  </div>
-
-  <div class="day"><div class="when">Day 3 · Sat Oct 17 · Summit Day · ~190 mi</div>
-    <h3>Mount Washington → Stowe → WRJ</h3>
-    <div class="card">
-      <div class="row"><div class="t">6:45 AM</div><div>⏰ Wake. ⛅ Check mt-washington.com or (603) 466-3988. Closed? → Plan B.</div></div>
-      <div class="row"><div class="t">7:15 AM</div><div>Motel breakfast, pack car.</div></div>
-      <div class="row"><div class="t">7:50 AM</div><div>Checkout (key drop-box fine).</div></div>
-      <div class="row"><div class="t">8:15 AM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Eastgate+Inn+Littleton+NH&destination=Mount+Washington+Auto+Road+Gorham+NH&waypoints=Twin+Mountain+NH" target="_blank">🧭 US-302 E → Auto Road</a> · 40-45 min.</div></div>
-      <div class="row"><div class="t">9:15 AM</div><div>⛰ Toll House — $36 x 2. Early = short line.</div></div>
-      <div class="row"><div class="t">9:45 AM</div><div>7.6-mile climb, steady pace.</div></div>
-      <div class="row"><div class="t">10:15 AM</div><div>🏔 SUMMIT 6,288 ft — <b>winter jacket + hat + gloves ON.</b> 130-mi views.</div></div>
-      <div class="row"><div class="t">11:45 AM</div><div>Descend — light brakes, low gear.</div></div>
-      <div class="row"><div class="t">12:15 PM</div><div>Cooler picnic at base lot — saves ~$25.</div></div>
-      <div class="row"><div class="t">12:45 PM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Mount+Washington+Auto+Road+Gorham+NH&destination=Stowe+VT&waypoints=Twin+Mountain+NH" target="_blank">🧭 West to Stowe</a> · ~2 h 15.</div></div>
-      <div class="row"><div class="t">3:00 PM</div><div>🍁 Stowe — free lot behind Community Church on Main St; walk 45 min.</div></div>
-      <div class="row"><div class="t">4:00 PM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Stowe+VT&destination=Waitsfield+VT&waypoints=Waterbury+VT" target="_blank">🧭 Route 100 South</a> — Waterbury + Waitsfield covered bridge.</div></div>
-      <div class="row"><div class="t">5:30 PM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Waitsfield+VT&destination=Super+8+White+River+Junction+VT" target="_blank">🧭 I-89 S → Super 8</a> — 1 h 5 min.</div></div>
-      <div class="row"><div class="t">6:45 PM</div><div>Check in — free lot out front.</div></div>
-      <div class="row"><div class="t">7:15 PM</div><div>Dinner on Rt 5/Rt 12A strip (~$15).</div></div>
-      <div class="row"><div class="t">9:30 PM</div><div>Sleep EARLY — hard deadline tomorrow.</div></div>
-      <div class="stay">🏨 <b>Sleep:</b> Super 8 WRJ · Conf <code>72079947861392</code> · checkout 11 AM</div>
-    </div>
-  </div>
-
-  <div class="day"><div class="when">Day 4 · Sun Oct 18 · Deadline Day · 265 mi</div>
-    <h3>Quechee Gorge → Home by 6:10 PM SHARP</h3>
-    <div class="card">
-      <div class="row"><div class="t">7:00 AM</div><div>⏰ Wake up.</div></div>
-      <div class="row"><div class="t">7:30 AM</div><div>Free Super 8 breakfast — eat solid.</div></div>
-      <div class="row"><div class="t">8:05 AM</div><div>Load the car fully, sweep the room.</div></div>
-      <div class="row"><div class="t">8:30 AM</div><div><a href="https://www.google.com/maps/dir/?api=1&origin=Super+8+by+Wyndham+White+River+Junction&destination=Quechee+Gorge+Vermont" target="_blank">🧭 Quechee Gorge (10 min)</a> — free visitor lot on US-4, 45 min.</div></div>
-      <div class="row"><div class="t">9:30 AM</div><div>Optional Woodstock drive-through — 15 min max.</div></div>
-      <div class="row"><div class="t">10:00 AM</div><div>Checkout by 10:30.</div></div>
-      <div class="row"><div class="t">10:30 AM</div><div>⛽ Tank 100% full by the exit.</div></div>
-      <div class="row"><div class="t">11:00 AM</div><div>📱 Traffic check: A = I-91 S → I-95 S · B = I-91 S → I-84 W → GW Bridge. Pick greener.</div></div>
-      <div class="row"><div class="t">11:30 AM</div><div>Last photos — genuinely ready.</div></div>
-      <div class="row"><div class="t">12:00 PM</div><div>🚗 <a href="https://www.google.com/maps/dir/?api=1&origin=Super+8+by+Wyndham+White+River+Junction&destination=87-36+165th+St+Jamaica+NY+11432" target="_blank">🧭 DEPART EXACTLY — navigate home NOW</a> · 4.5-5 hrs.</div></div>
-      <div class="row"><div class="t">2:30 PM</div><div>ONE rest stop only, 20 min. Cooler lunch.</div></div>
-      <div class="row"><div class="t">4:45-5:15</div><div>Enter Queens — drop bags home FIRST.</div></div>
-      <div class="row"><div class="t">5:45 PM</div><div>🏠 Unloaded — 20+ min buffer ✅</div></div>
-      <div class="row"><div class="t">Evening</div><div>Return rental tonight or Monday AM, filled up.</div></div>
-    </div>
-  </div>
 
   </div>
-</section>
 
-<section id="pack">
-  <div class="eyebrow">04 — Packing</div>
-  <h2>Bring List (Tap to Check Off)</h2>
-  <div class="packgrid">
-    <div class="pack"><h4>📸 Photo Gear</h4>
-      <ul class="check">
-        <li>Tripod (summit &amp; couple photos)</li>
-        <li>Phone dashboard mount</li>
-        <li>Power bank + 2 charging cables</li>
-        <li>Camera / spare batteries</li>
-      </ul></div>
-    <div class="pack"><h4>🧥 Clothing — Summit = Winter</h4>
-      <ul class="check">
-        <li>Warm winter jacket (Mt Washington wind!)</li>
-        <li>Gloves + beanie/hat</li>
-        <li>Layers: thermals, hoodie, long sleeves</li>
-        <li>Walking shoes/boots</li>
-        <li>Rain shell · Sunglasses</li>
-      </ul></div>
-    <div class="pack"><h4>🚗 Car &amp; Docs</h4>
-      <ul class="check">
-        <li>Driver's license + rental paperwork</li>
-        <li>Car insurance card</li>
-        <li>Credit cards (deposit + 3 hotels)</li>
-        <li>USB car charger</li>
-        <li>Offline maps NH + VT downloaded</li>
-      </ul></div>
-    <div class="pack"><h4>🎂 Birthday Kit</h4>
-      <ul class="check">
-        <li>Fairy lights + tape (backup)</li>
-        <li>Birthday card (hidden!)</li>
-        <li>Flowers/balloons delivery set for Oct 15</li>
-        <li>Cash for tips &amp; farm stands</li>
-      </ul></div>
-    <div class="pack"><h4>🧴 Personal</h4>
-      <ul class="check">
-        <li>Snacks + water cooler</li>
-        <li>Sanitizer, wet wipes</li>
-        <li>Meds + basic first aid</li>
-        <li>Blanket for overlooks</li>
-      </ul></div>
-    <div class="pack"><h4>📱 Phone Prep — Oct 14 Night</h4>
-      <ul class="check">
-        <li>Offline maps NH + VT</li>
-        <li>Screenshots: train + 3 hotel confirmations + Priceline rental</li>
-        <li>Save numbers: hotels, Vito's, Auto Road, train</li>
-        <li>Check mt-washington.com status</li>
-      </ul></div>
-  </div>
-</section>
-
-<section id="birthday">
-  <div class="eyebrow">05 — Mission</div>
-  <h2>🎂 Birthday Ops Plan</h2>
-  <div class="card">
-    <ul class="check">
-      <li>Tonight: call Vito Marcello's (603) 356-7000 → Oct 15, 6:30 PM, table for 2, surprise candle dessert</li>
-      <li>Thu 2:00 PM: Shaw's cake + flowers/balloons → Swiss Chalets front desk (wife waits in car)</li>
-      <li>Thu 3:00 PM: room reveal — video rolling 📸</li>
-      <li>Thu 5:45 PM: Cathedral Ledge golden shoot with tripod</li>
-      <li>Thu 6:25 PM: text Vito's "on the way" so dessert is timed</li>
-    </ul>
-    <div class="quote">🤫 Keep this section secret until after the trip!</div>
-  </div>
-  <div class="warn">⛅ <b>Weather rule:</b> Check mt-washington.com Thu &amp; Fri nights. If the Auto Road closes Saturday → extra US-302 Crawford Notch time + more time in Stowe &amp; Woodstock.</div>
-</section>
-
-</div>
-
-<footer>
-  Made for <b>Emon &amp; his wife</b> · Oct 15-18, 2026 · Every booking locked 🔒<br>
-  emonmiah21.github.io/fall-foliage-trip · Safe travels! 🍁
-</footer>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var stops=[
-    {t:.00,n:"🏠 Jamaica, Queens",d:"Day 1 · 8 AM",u:"https://www.google.com/maps/dir/?api=1&origin=87-36+165th+St+Jamaica+NY+11432&destination=Swiss+Chalets+Village+Inn+North+Conway+NH"},
-    {t:.35,n:"🏨 Swiss Chalets",d:"Night 1 · Birthday",u:"https://www.google.com/maps/search/?api=1&query=Swiss+Chalets+Village+Inn+North+Conway"},
-    {t:.43,n:"🚂 Train 9 AM",d:"Day 2 · arrive 8:30",u:"https://www.google.com/maps/dir/?api=1&origin=Swiss+Chalets+Village+Inn+North+Conway&destination=Conway+Scenic+Railroad+38+Norcross+Circle+North+Conway+NH"},
-    {t:.49,n:"🏨 Eastgate Inn",d:"Night 2 · Littleton",u:"https://www.google.com/maps/dir/?api=1&origin=Lincoln+NH&destination=Eastgate+Inn+Littleton+NH"},
-    {t:.60,n:"⛰ Mt Washington",d:"Day 3 · 9:15 AM",u:"https://www.google.com/maps/dir/?api=1&origin=Eastgate+Inn+Littleton+NH&destination=Mount+Washington+Auto+Road+Gorham+NH&waypoints=Twin+Mountain+NH"},
-    {t:.70,n:"🍁 Stowe, VT",d:"Day 3 · 3 PM",u:"https://www.google.com/maps/dir/?api=1&origin=Mount+Washington+Auto+Road+Gorham+NH&destination=Stowe+VT&waypoints=Twin+Mountain+NH"},
-    {t:.80,n:"🏨 Super 8",d:"Night 3 · Exit 11",u:"https://www.google.com/maps/dir/?api=1&origin=Waitsfield+VT&destination=Super+8+White+River+Junction+VT"},
-    {t:1,n:"🏠 Home 6:10 PM",d:"Day 4 · noon leave",u:"https://www.google.com/maps/dir/?api=1&origin=Super+8+by+Wyndham+White+River+Junction&destination=87-36+165th+St+Jamaica+NY+11432"}
-  ];
-  var NS='http://www.w3.org/2000/svg', XL='http://www.w3.org/1999/xlink';
-  var rp=document.getElementById('rp'),rd=document.getElementById('rd'),car=document.getElementById('car');
-  var L=rp.getTotalLength();
-  rd.style.strokeDasharray=L; rd.style.strokeDashoffset=L;
-  stops.forEach(function(s){
-    var p=rp.getPointAtLength(s.t*L), g=document.getElementById('stops');
-    var aEl=document.createElementNS(NS,'a');
-    aEl.setAttribute('href',s.u);
-    aEl.setAttributeNS(XL,'xlink:href',s.u);
-    aEl.setAttribute('target','_blank'); aEl.setAttribute('rel','noopener');
-    var hit=document.createElementNS(NS,'circle');
-    hit.setAttribute('cx',p.x);hit.setAttribute('cy',p.y);hit.setAttribute('r',22);
-    hit.setAttribute('fill','rgba(0,0,0,0)');
-    aEl.appendChild(hit);
-    var c=document.createElementNS(NS,'circle');
-    c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r',11);
-    c.setAttribute('class','dotc');c.setAttribute('fill','#fff');c.setAttribute('stroke','#c2542b');
-    aEl.appendChild(c); g.appendChild(aEl);
-    var a=document.createElementNS(NS,'text');
-    a.setAttribute('x',p.x);a.setAttribute('y',p.y-18);a.setAttribute('text-anchor','middle');a.setAttribute('class','sl');a.textContent=s.n;g.appendChild(a);
-    var b=document.createElementNS(NS,'text');
-    b.setAttribute('x',p.x);b.setAttribute('y',p.y+36);b.setAttribute('text-anchor','middle');b.setAttribute('class','ss');b.textContent=s.d;g.appendChild(b);
-  });
-  function pc(t){var p=rp.getPointAtLength(t*L);car.setAttribute('x',p.x-18);car.setAttribute('y',p.y+4);}
-  pc(0);
-  var an=null;
-  window.drive=function(){
-    if(an)cancelAnimationFrame(an);var st=null;
-    function f(ts){if(!st)st=ts;var t=(ts-st)/9500;if(t>1)t=1;pc(t);rd.style.strokeDashoffset=L*(1-t);if(t<1)an=requestAnimationFrame(f);}
-    an=requestAnimationFrame(f);
-  };
-  drive();
-  var dep=new Date('2026-10-15T08:00:00-04:00');
-  function tick(){
-    var d=dep-new Date();
-    if(d<0){document.getElementById('countdown').textContent='🚗 On the road!';return;}
-    var dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);
-    document.getElementById('countdown').textContent='Departure in '+dd+'d '+hh+'h '+mm+'m '+ss+'s';
-  }
-  tick(); setInterval(tick,1000);
-  document.querySelectorAll('.check li').forEach(function(li){li.addEventListener('click',function(){li.classList.toggle('done');});});
-});
-</script>
 </body>
 </html>
