@@ -1,1 +1,1287 @@
-[Complete 48KB index.html with real high-resolution OpenStreetMap tile engine, numbered destination markers, animated car moving along the highway route, persistent checklist with localStorage, and Google Maps turn-by-turn links on every step]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🍁 Fall Foliage & Birthday Trip 2026 | Emon & Tammi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet Interactive Real Map Engine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <style>
+    :root {
+      --primary: #ea580c;
+      --primary-dark: #9a3412;
+      --primary-light: #ffedd5;
+      --accent: #d97706;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-inner: #0f172a;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success-bg: #064e3b;
+      --success-text: #34d399;
+      --pink-bg: #500724;
+      --pink-border: #f472b6;
+      --pink-text: #fbcfe8;
+      --blue-btn: #3b82f6;
+      --blue-bg: #1e3a8a;
+      --blue-border: #60a5fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0b0f19;
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 110px;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fb923c;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      padding: 4px 10px;
+      border-radius: 99px;
+      border: 1px solid #059669;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #451a03 0%, #9a3412 60%, #c2410c 100%);
+      color: #ffffff;
+      padding: 28px 20px 22px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid #7c2d12;
+    }
+
+    .hero::after {
+      content: "🍁";
+      position: absolute;
+      right: -15px;
+      bottom: -20px;
+      font-size: 120px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .hero p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* REAL LEAFLET MAP SECTION */
+    .map-section {
+      max-width: 660px;
+      margin: 16px auto 0;
+      padding: 0 16px;
+    }
+
+    .map-card-wrapper {
+      background: var(--card-bg);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .map-floating-header {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 500;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .map-floating-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .live-car-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 3px 8px;
+      border-radius: 99px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      background: #38bdf8;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: pulseGlow 1.5s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    #trip-map {
+      width: 100%;
+      height: 320px;
+      background: #1e293b;
+    }
+
+    /* Custom Map Markers with Glowing Number Badges */
+    .custom-map-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ea580c;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 0 12px rgba(234, 88, 12, 0.9), 0 2px 6px rgba(0,0,0,0.6);
+      border: 2px solid #ffffff;
+    }
+
+    .custom-car-marker {
+      font-size: 22px;
+      filter: drop-shadow(0 0 8px #38bdf8);
+      animation: carWiggle 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes carWiggle {
+      from { transform: translateY(0); }
+      to { transform: translateY(-3px); }
+    }
+
+    /* Floating Navigation Pills */
+    .menu-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 16px;
+      background: #0f172a;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+      position: sticky;
+      top: 53px;
+      z-index: 999;
+    }
+    .menu-bar::-webkit-scrollbar { display: none; }
+
+    .menu-pill {
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #1e293b;
+      border: 1px solid var(--border);
+      padding: 7px 13px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    .menu-pill:hover, .menu-pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .container {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 24px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .day-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fb923c;
+    }
+
+    .day-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fdba74;
+    }
+
+    .day-badge {
+      background: rgba(234, 88, 12, 0.25);
+      color: #fdba74;
+      border: 1px solid rgba(234, 88, 12, 0.5);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .day-guide-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .guide-row {
+      display: flex;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+    .guide-row:last-child { margin-bottom: 0; }
+
+    .guide-label {
+      font-weight: 700;
+      color: #fb923c;
+      min-width: 95px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .guide-val {
+      color: var(--text);
+      flex: 1;
+    }
+
+    .timeline {
+      position: relative;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 36px;
+      padding-bottom: 22px;
+      transition: all 0.2s ease;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 26px;
+      bottom: 0;
+      width: 2px;
+      background: #334155;
+    }
+
+    .timeline-item:last-child::before {
+      display: none;
+    }
+
+    /* Interactive Checkbox Button */
+    .step-check-btn {
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: #0f172a;
+      border: 2px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+      color: transparent;
+      user-select: none;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .timeline-item.completed {
+      opacity: 0.45;
+    }
+
+    .timeline-item.completed .step-check-btn {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    }
+
+    .timeline-item.completed .item-title {
+      text-decoration: line-through;
+    }
+
+    .time-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #fdba74;
+      background: rgba(234, 88, 12, 0.2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+      border: 1px solid rgba(234, 88, 12, 0.4);
+    }
+
+    .item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .highlight-box {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .highlight-pink {
+      background: var(--pink-bg);
+      border: 1px dashed var(--pink-border);
+      color: var(--pink-text);
+    }
+
+    .code-badge {
+      display: inline-block;
+      background: #0f172a;
+      border: 1px solid #475569;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: monospace;
+      color: #94a3b8;
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+
+    .maps-btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .btn-maps {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #93c5fd;
+      text-decoration: none;
+      background: rgba(30, 58, 138, 0.4);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #1d4ed8;
+      transition: all 0.15s ease;
+    }
+
+    .btn-maps:hover {
+      background: rgba(37, 99, 235, 0.4);
+      border-color: #60a5fa;
+    }
+
+    .table-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-row:last-child {
+      border-bottom: none;
+    }
+
+    .table-main {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .table-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .phone-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--primary);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f172a;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .check-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .check-item.done {
+      background: rgba(6, 78, 59, 0.3);
+      border-color: #059669;
+      color: #34d399;
+    }
+
+    .check-item.done .check-box {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-nav">
+    <div class="brand">
+      <span>🍁</span> Emon & Tammi's Trip
+    </div>
+    <div class="status-badge">All 4 Confirmed ✅</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-tag">Oct 15 – Oct 18, 2026 • 4 Days</div>
+    <h1>Fall Foliage & Birthday Master Route</h1>
+    <p>Queens, NY ➔ White Mountains (NH) ➔ Green Mountains (VT) ➔ Queens</p>
+  </div>
+
+  <!-- Real Full OpenStreetMap Interactive Map Section with Moving Car -->
+  <div class="map-section">
+    <div class="map-card-wrapper">
+      <div class="map-floating-header">
+        <div class="map-floating-title">
+          <span>🗺️</span> Live Road Trip Route Map
+        </div>
+        <div class="live-car-tag">
+          <div class="pulse-dot"></div>
+          <span>Active Route</span>
+        </div>
+      </div>
+      <div id="trip-map"></div>
+    </div>
+  </div>
+
+  <div class="menu-bar">
+    <a href="#day1" class="menu-pill active">Day 1: Surprise 🎂</a>
+    <a href="#day2" class="menu-pill">Day 2: Train 🚂</a>
+    <a href="#day3" class="menu-pill">Day 3: Vermont 🍂</a>
+    <a href="#day4" class="menu-pill">Day 4: Gorge & Home 🏡</a>
+    <a href="#hotels" class="menu-pill">Hotels & Tickets 📋</a>
+    <a href="#pack" class="menu-pill">Checklist 🎒</a>
+  </div>
+
+  <div class="container">
+
+    <div class="section-title">📅 Master Day-by-Day Timeline</div>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:-6px; margin-bottom:14px;">💡 <em>Tap any square checkbox to mark an activity completed as you go!</em></p>
+    
+    <!-- DAY 1 -->
+    <div class="card" id="day1">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 1: Thursday, Oct 15</div>
+          <div class="day-sub">Queens ➔ North Conway & Birthday Surprise</div>
+        </div>
+        <div class="day-badge">Night 1: NH</div>
+      </div>
+
+      <div class="day-guide-box">
+        <div class="guide-row">
+          <div class="guide-label">⏰ Wake Up:</div>
+          <div class="guide-val"><strong>5:30 AM</strong> (Departure 6:30 AM sharp)</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">🌡️ Weather:</div>
+          <div class="guide-val">High 58°F / Low 38°F (Crisp mountain air)</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">👗 Wear Today:</div>
+          <div class="guide-val">Comfortable road-trip layers: soft jeans, stylish top/sweater, and cardigan/jacket ready for evening photos & birthday dinner.</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item" id="step-d1-1">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-1')">✓</div>
+          <div class="time-badge">5:30 AM</div>
+          <div class="item-title">Wake Up & Luggage Load</div>
+          <div class="item-desc">
+            Morning routine, grab coffee/tea, load luggage and snack bag into the car trunk. Ensure IDs and phones are ready.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-2">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-2')">✓</div>
+          <div class="time-badge">6:30 AM</div>
+          <div class="item-title">Depart Jamaica, Queens, NY (Drive to North Conway)</div>
+          <div class="item-desc">
+            Hit the road early to bypass NYC & Connecticut traffic via I-95 North / I-91 North / Route 16 into New Hampshire (~360 miles, 5.5 hrs).
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Jamaica,+Queens,+NY/Swiss+Chalets+Village+Inn,+457+NH-16A,+North+Conway,+NH+03845" target="_blank" class="btn-maps">🚗 Directions: Queens ➔ Swiss Chalets Hotel</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-3">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-3')">✓</div>
+          <div class="time-badge">9:30 AM</div>
+          <div class="item-title">Rest Stop & Breakfast Break</div>
+          <div class="item-desc">
+            20-minute stop around Hartford / Mass Pike for gas, hot coffee, and breakfast sandwiches.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-4">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-4')">✓</div>
+          <div class="time-badge">12:00 PM – 1:00 PM</div>
+          <div class="item-title">Shaw's Grocery & Cake Delivery Arrives at Motel</div>
+          <div class="item-desc">
+            Instacart shopper delivers fresh 4" chocolate cake ("HBD My Love ❤️"), 6-stem roses, and metallic candles to Swiss Chalets front desk (stored in office fridge).
+          </div>
+          <div class="highlight-box highlight-pink">
+            <strong>🎂 Delivery Note:</strong> Pre-paid and addressed to guest Emon Miah (Booking 5906.370.408).
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-5">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-5')">✓</div>
+          <div class="time-badge">1:45 PM – 2:15 PM</div>
+          <div class="item-title">Arrive & Check-in at Swiss Chalets Village Inn</div>
+          <div class="item-desc">
+            Pull up to 457 NH Route 16A, North Conway. Step to front desk to check in, get Room 6 keys, and secretly confirm they have your Amazon box (delivered Oct 13) and Shaw's cake in the back office.
+          </div>
+          <div>
+            <span class="code-badge">Booking: 5906.370.408</span>
+            <span class="code-badge">PIN: 2532</span>
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Swiss+Chalets+Village+Inn+457+NH+Route+16A+North+Conway+NH" target="_blank" class="btn-maps">📍 Navigate to Swiss Chalets Village Inn</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-6">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-6')">✓</div>
+          <div class="time-badge">2:30 PM – 4:30 PM</div>
+          <div class="item-title">North Conway Village Outing (Distraction Window)</div>
+          <div class="item-desc">
+            Take Tammi for hot drinks, browse famous Zeb's General Store for maple candy, and take photos around North Conway Village while the room is secretly prepped.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Swiss+Chalets+Village+Inn,+457+NH-16A,+North+Conway,+NH/Zeb's+General+Store,+2675+White+Mountain+Hwy,+North+Conway,+NH" target="_blank" class="btn-maps">🚗 Directions: Swiss Chalets ➔ Zeb's General Store</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-7">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-7')">✓</div>
+          <div class="time-badge">4:30 PM – 5:15 PM</div>
+          <div class="item-title">THE BIG ROOM SURPRISE REVEAL 🎈✨</div>
+          <div class="item-desc">
+            Drive back from village and walk into Room 6 decorated with black & gold Happy Birthday banner, warm glowing fairy lights, fresh roses, and chilled chocolate cake on the table!
+          </div>
+          <div class="highlight-box highlight-pink">
+            <strong>🎉 Birthday Moment:</strong> Light the metallic candle, sing Happy Birthday, take celebration photos & videos, and enjoy cake together!
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Zeb's+General+Store,+North+Conway,+NH/Swiss+Chalets+Village+Inn,+457+NH-16A,+North+Conway,+NH" target="_blank" class="btn-maps">🚗 Directions: Back to Swiss Chalets for Surprise</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-8">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-8')">✓</div>
+          <div class="time-badge">6:30 PM – 8:30 PM</div>
+          <div class="item-title">Romantic Birthday Dinner</div>
+          <div class="item-desc">
+            Celebrate at Delaney's Hole in the Wall (cozy tavern vibes) or Muddy Moose Restaurant & Pub.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Swiss+Chalets+Village+Inn,+457+NH-16A,+North+Conway,+NH/Delaney's+Hole+in+the+Wall,+2938+White+Mountain+Hwy,+North+Conway,+NH" target="_blank" class="btn-maps">🚗 Directions: Hotel ➔ Delaney's Restaurant</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d1-9">
+          <div class="step-check-btn" onclick="toggleStep('step-d1-9')">✓</div>
+          <div class="time-badge">9:30 PM</div>
+          <div class="item-title">Rest & Early Bedtime</div>
+          <div class="item-desc">
+            Relax and get a great night's sleep for tomorrow morning's 9:00 AM Mountaineer train ride!
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="card" id="day2">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 2: Friday, Oct 16</div>
+          <div class="day-sub">Mountaineer Train, Kancamagus & Franconia Notch</div>
+        </div>
+        <div class="day-badge">Night 2: NH</div>
+      </div>
+
+      <div class="day-guide-box">
+        <div class="guide-row">
+          <div class="guide-label">⏰ Wake Up:</div>
+          <div class="guide-val"><strong>7:00 AM</strong> (Depot Will-Call arrival by 8:30 AM)</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">🌡️ Weather:</div>
+          <div class="guide-val">High 52°F / Low 32°F (Colder mountain elevations)</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">👗 Wear Today:</div>
+          <div class="guide-val">Warmest outdoor clothing: thermal layers, fleece sweater, windproof jacket, scarf, and comfortable sneakers/boots for walking trails.</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item" id="step-d2-1">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-1')">✓</div>
+          <div class="time-badge">7:00 AM</div>
+          <div class="item-title">Wake Up & Motel Checkout</div>
+          <div class="item-desc">
+            Enjoy morning coffee/breakfast at Swiss Chalets, pack bags into the trunk, and complete room checkout by 8:00 AM.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-2">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-2')">✓</div>
+          <div class="time-badge">8:30 AM</div>
+          <div class="item-title">Arrive at Conway Scenic Depot (Will-Call)</div>
+          <div class="item-desc">
+            Park at 38 Norcross Circle. Walk up to the Will-Call ticket window with photo ID and Booking #384145106 to pick up paper passes. Board by 8:45 AM.
+          </div>
+          <div><span class="code-badge">Train Booking: #384145106</span></div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Swiss+Chalets+Village+Inn,+457+NH-16A,+North+Conway,+NH/Conway+Scenic+Railroad,+38+Norcross+Cir,+North+Conway,+NH" target="_blank" class="btn-maps">🚗 Directions: Hotel ➔ Train Station Depot</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-3">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-3')">✓</div>
+          <div class="time-badge">9:00 AM – 1:00 PM</div>
+          <div class="item-title">The Mountaineer Excursion (Crawford Notch)</div>
+          <div class="item-desc">
+            4-hour round-trip scenic mountain railway ride. Crosses high above Crawford Notch across the famous Frankenstein Trestle & Willey Brook Bridge at peak foliage!
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-4">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-4')">✓</div>
+          <div class="time-badge">1:00 PM – 1:45 PM</div>
+          <div class="item-title">Lunch in North Conway Village</div>
+          <div class="item-desc">
+            Grab quick warm sandwiches or pizza in the village before starting the scenic mountain drive.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-5">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-5')">✓</div>
+          <div class="time-badge">1:45 PM – 3:45 PM</div>
+          <div class="item-title">Drive Kancamagus Highway (Route 112)</div>
+          <div class="item-desc">
+            Drive America's premier foliage scenic byway (34.5 miles). Photo stops at Albany Covered Bridge, Lower Falls river rocks, and Sugar Hill Overlook.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Conway+Scenic+Railroad,+38+Norcross+Cir,+North+Conway,+NH/Albany+Covered+Bridge,+Passaconaway+Rd,+Albany,+NH/Sugar+Hill+Scenic+Vista,+Kancamagus+Hwy,+Lincoln,+NH" target="_blank" class="btn-maps">🚗 Directions: Train Depot ➔ Kancamagus Byway Stops</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-6">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-6')">✓</div>
+          <div class="time-badge">4:00 PM – 5:00 PM</div>
+          <div class="item-title">Artists Bluff & Echo Lake (Franconia Notch)</div>
+          <div class="item-desc">
+            Short scenic 1.5-mile loop trail to the iconic rocky outcrop overlooking Echo Lake and Cannon Mountain (the famous view from the video!).
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Sugar+Hill+Scenic+Vista,+Kancamagus+Hwy,+Lincoln,+NH/Artists+Bluff+Trailhead,+Franconia,+NH" target="_blank" class="btn-maps">🚗 Directions: Kancamagus ➔ Artists Bluff Trailhead</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-7">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-7')">✓</div>
+          <div class="time-badge">5:30 PM</div>
+          <div class="item-title">Check-in at Eastgate Inn (Littleton, NH)</div>
+          <div class="item-desc">
+            Arrive at 335 Cottage St, Littleton. Check in, drop off bags, and freshen up.
+          </div>
+          <div><span class="code-badge">Expedia: 72079947384592</span></div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Artists+Bluff+Trailhead,+Franconia,+NH/Eastgate+Inn,+335+Cottage+St,+Littleton,+NH" target="_blank" class="btn-maps">🚗 Directions: Artists Bluff ➔ Eastgate Inn</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d2-8">
+          <div class="step-check-btn" onclick="toggleStep('step-d2-8')">✓</div>
+          <div class="time-badge">6:30 PM – 8:30 PM</div>
+          <div class="item-title">Dinner & Stroll in Littleton Downtown</div>
+          <div class="item-desc">
+            Walk historic Main Street, see the world's longest candy counter at Chutters, and cross the Ammonoosuc Covered Bridge. Dinner at Schilling Beer Co. (wood-fired pizza by the river).
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Eastgate+Inn,+335+Cottage+St,+Littleton,+NH/Schilling+Beer+Co.,+18+Mill+St,+Littleton,+NH" target="_blank" class="btn-maps">🚗 Directions: Motel ➔ Schilling Beer Co / Downtown</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="card" id="day3">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 3: Saturday, Oct 17</div>
+          <div class="day-sub">Stowe, Smugglers' Notch & Woodstock, VT</div>
+        </div>
+        <div class="day-badge">Night 3: VT</div>
+      </div>
+
+      <div class="day-guide-box">
+        <div class="guide-row">
+          <div class="guide-label">⏰ Wake Up:</div>
+          <div class="guide-val"><strong>7:30 AM</strong> (Departure by 8:30 AM)</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">🌡️ Weather:</div>
+          <div class="guide-val">High 56°F / Low 36°F</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">👗 Wear Today:</div>
+          <div class="guide-val">Casual fall chic: flannel/sweater, comfortable walking jeans, stylish boots/sneakers, and light warm jacket.</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item" id="step-d3-1">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-1')">✓</div>
+          <div class="time-badge">7:30 AM</div>
+          <div class="item-title">Wake Up & Checkout from Littleton</div>
+          <div class="item-desc">
+            Morning coffee, pack luggage into car, checkout from Eastgate Inn by 8:30 AM.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-2">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-2')">✓</div>
+          <div class="time-badge">8:30 AM – 10:00 AM</div>
+          <div class="item-title">Drive Route 108 through Smugglers' Notch</div>
+          <div class="item-desc">
+            Drive through the dramatic, narrow mountain pass between Mount Mansfield and Spruce Peak flanked by giant boulders and golden tree canopies.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Eastgate+Inn,+335+Cottage+St,+Littleton,+NH/Smugglers+Notch+Pass,+VT-108,+Jeffersonville,+VT" target="_blank" class="btn-maps">🚗 Directions: Littleton ➔ Smugglers' Notch Pass</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-3">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-3')">✓</div>
+          <div class="time-badge">10:00 AM – 11:30 AM</div>
+          <div class="item-title">Explore Stowe Village</div>
+          <div class="item-desc">
+            Walk Stowe's postcard Main Street, brick sidewalks, and take photos of the iconic white-steeple Stowe Community Church.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Smugglers+Notch+Pass,+VT-108,+Jeffersonville,+VT/Stowe+Community+Church,+Main+Street,+Stowe,+VT" target="_blank" class="btn-maps">🚗 Directions: Mountain Pass ➔ Stowe Village</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-4">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-4')">✓</div>
+          <div class="time-badge">11:45 AM – 1:00 PM</div>
+          <div class="item-title">Cold Hollow Cider Mill & Lunch</div>
+          <div class="item-desc">
+            Watch fresh cider being made, enjoy hot apple cider donuts, sample maple syrup, and eat lunch at their bakery café in Waterbury.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Stowe+Community+Church,+Main+Street,+Stowe,+VT/Cold+Hollow+Cider+Mill,+Waterbury-Stowe+Road,+Waterbury+Center,+VT" target="_blank" class="btn-maps">🚗 Directions: Stowe ➔ Cold Hollow Cider Mill</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-5">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-5')">✓</div>
+          <div class="time-badge">1:15 PM – 2:30 PM</div>
+          <div class="item-title">Scenic Drive along Route 100 to Woodstock</div>
+          <div class="item-desc">
+            Cruise Vermont's most picturesque scenic valley through Green Mountain countryside down to historic Woodstock.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Cold+Hollow+Cider+Mill,+Waterbury+Center,+VT/Woodstock,+VT" target="_blank" class="btn-maps">🚗 Directions: Route 100 Scenic Byway to Woodstock</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-6">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-6')">✓</div>
+          <div class="time-badge">2:30 PM – 4:30 PM</div>
+          <div class="item-title">Woodstock Village & Sugarbush Farm</div>
+          <div class="item-desc">
+            Walk across the famous Middle Covered Bridge in Woodstock town square. Then drive up to Sugarbush Farm to sample 14 artisan cheddar cheeses and walk the maple sugar trail.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Middle+Covered+Bridge,+Mountain+Avenue,+Woodstock,+VT/Sugarbush+Farm,+591+Sugarbush+Farm+Rd,+Woodstock,+VT" target="_blank" class="btn-maps">🚗 Directions: Covered Bridge ➔ Sugarbush Farm</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-7">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-7')">✓</div>
+          <div class="time-badge">5:00 PM</div>
+          <div class="item-title">Check-in at Super 8 White River Junction</div>
+          <div class="item-desc">
+            Check-in at 442 North Hartland Rd (15 mins east of Woodstock). Settle in and unwind.
+          </div>
+          <div><span class="code-badge">Expedia: 72079947861392</span></div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Sugarbush+Farm,+591+Sugarbush+Farm+Rd,+Woodstock,+VT/Super+8+by+Wyndham+White+River+Junction,+442+N+Hartland+Rd,+White+River+Junction,+VT" target="_blank" class="btn-maps">🚗 Directions: Sugarbush Farm ➔ Super 8 Hotel</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d3-8">
+          <div class="step-check-btn" onclick="toggleStep('step-d3-8')">✓</div>
+          <div class="time-badge">6:30 PM</div>
+          <div class="item-title">Dinner near White River / Woodstock</div>
+          <div class="item-desc">
+            Dinner at Trail Break Taps & Tacos or Elixir Restaurant.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Super+8+by+Wyndham+White+River+Junction,+VT/Trail+Break+taps+%2B+tacos,+129+S+Main+St,+White+River+Junction,+VT" target="_blank" class="btn-maps">🚗 Directions: Hotel ➔ Trail Break Taps & Tacos</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="card" id="day4">
+      <div class="day-header">
+        <div>
+          <div class="day-num">Day 4: Sunday, Oct 18</div>
+          <div class="day-sub">Quechee Gorge & Scenic Drive Home</div>
+        </div>
+        <div class="day-badge">Home</div>
+      </div>
+
+      <div class="day-guide-box">
+        <div class="guide-row">
+          <div class="guide-label">⏰ Wake Up:</div>
+          <div class="guide-val"><strong>8:00 AM</strong> (Complimentary breakfast & checkout 9:00 AM)</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">🌡️ Weather:</div>
+          <div class="guide-val">High 59°F / Low 42°F</div>
+        </div>
+        <div class="guide-row">
+          <div class="guide-label">👗 Wear Today:</div>
+          <div class="guide-val">Comfortable travel clothes: casual hoodie/jacket and walking shoes.</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item" id="step-d4-1">
+          <div class="step-check-btn" onclick="toggleStep('step-d4-1')">✓</div>
+          <div class="time-badge">8:00 AM – 9:00 AM</div>
+          <div class="item-title">Breakfast & Motel Checkout</div>
+          <div class="item-desc">
+            Enjoy breakfast at Super 8, pack car, and complete checkout.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d4-2">
+          <div class="step-check-btn" onclick="toggleStep('step-d4-2')">✓</div>
+          <div class="time-badge">9:30 AM – 11:30 AM</div>
+          <div class="item-title">Quechee Gorge & Cabot Cheese Village</div>
+          <div class="item-desc">
+            Walk across the walkway bridge over "Vermont's Little Grand Canyon" (165-foot deep river gorge) and browse the Cabot cheese & Vermont craft stores.
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Super+8+by+Wyndham+White+River+Junction,+VT/Quechee+Gorge+Bridge,+US-4,+Quechee,+VT" target="_blank" class="btn-maps">🚗 Directions: Hotel ➔ Quechee Gorge Bridge</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d4-3">
+          <div class="step-check-btn" onclick="toggleStep('step-d4-3')">✓</div>
+          <div class="time-badge">11:45 AM</div>
+          <div class="item-title">Begin Highway Drive Home to Queens, NY</div>
+          <div class="item-desc">
+            Smooth ~260-mile highway drive south down I-91 South and I-95 South through Connecticut (~4.5 hrs).
+          </div>
+          <div class="maps-btn-container">
+            <a href="https://www.google.com/maps/dir/Quechee+Gorge+Bridge,+US-4,+Quechee,+VT/Jamaica,+Queens,+NY" target="_blank" class="btn-maps">🚗 Directions: Quechee Gorge ➔ Queens, NY (Home)</a>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d4-4">
+          <div class="step-check-btn" onclick="toggleStep('step-d4-4')">✓</div>
+          <div class="time-badge">1:30 PM</div>
+          <div class="item-title">Lunch Stop (Massachusetts / CT Border)</div>
+          <div class="item-desc">
+            Quick 30-minute lunch & gas fill-up along the highway.
+          </div>
+        </div>
+
+        <div class="timeline-item" id="step-d4-5">
+          <div class="step-check-btn" onclick="toggleStep('step-d4-5')">✓</div>
+          <div class="time-badge">4:30 PM – 5:00 PM</div>
+          <div class="item-title">Arrive Safely Home in Jamaica, Queens, NY</div>
+          <div class="item-desc">
+            Unpack and celebrate a magical 4-day fall foliage road trip and birthday memory!
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DIRECTORY & CONTACTS -->
+    <div class="section-title" id="hotels">📋 Confirmed Bookings & Directory</div>
+    
+    <div class="card">
+      <div class="table-row">
+        <div>
+          <div class="table-main">Swiss Chalets Village Inn (Night 1)</div>
+          <div class="table-sub">457 NH Route 16A, North Conway, NH</div>
+          <div class="code-badge">Conf: 5906.370.408 (PIN 2532)</div>
+        </div>
+        <div>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Swiss+Chalets+Village+Inn+457+NH+Route+16A+North+Conway+NH" target="_blank" class="btn-maps" style="margin-right:6px;">📍 Map</a>
+          <a href="tel:16033567332" class="phone-btn">📞 Call</a>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <div>
+          <div class="table-main">Conway Scenic Railroad (Train)</div>
+          <div class="table-sub">38 Norcross Circle, North Conway, NH</div>
+          <div class="code-badge">Booking: #384145106</div>
+        </div>
+        <div>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Conway+Scenic+Railroad+38+Norcross+Cir+North+Conway+NH" target="_blank" class="btn-maps" style="margin-right:6px;">📍 Map</a>
+          <a href="tel:16033565251" class="phone-btn">📞 Call</a>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <div>
+          <div class="table-main">Eastgate Inn (Night 2)</div>
+          <div class="table-sub">335 Cottage St, Littleton, NH</div>
+          <div class="code-badge">Expedia: 72079947384592</div>
+        </div>
+        <div>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Eastgate+Inn+335+Cottage+St+Littleton+NH" target="_blank" class="btn-maps" style="margin-right:6px;">📍 Map</a>
+          <a href="tel:16034443971" class="phone-btn">📞 Call</a>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <div>
+          <div class="table-main">Super 8 White River Jct (Night 3)</div>
+          <div class="table-sub">442 North Hartland Rd, White River Jct, VT</div>
+          <div class="code-badge">Expedia: 72079947861392</div>
+        </div>
+        <div>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Super+8+by+Wyndham+White+River+Junction+VT" target="_blank" class="btn-maps" style="margin-right:6px;">📍 Map</a>
+          <a href="tel:18022957349" class="phone-btn">📞 Call</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACKING CHECKLIST -->
+    <div class="section-title" id="pack">🎒 Road Trip Checklist</div>
+
+    <div class="card">
+      <div class="check-grid">
+        <div class="check-item done" id="pack-1"><div class="check-box" onclick="togglePack('pack-1')">✓</div> Amazon Room Kit (Delivers Oct 13 to Hotel)</div>
+        <div class="check-item done" id="pack-2"><div class="check-box" onclick="togglePack('pack-2')">✓</div> Instacart Cake & Roses (Delivers Oct 15 @ 12PM)</div>
+        <div class="check-item" id="pack-3"><div class="check-box" onclick="togglePack('pack-3')">✓</div> Lighter / Matches (for birthday candle)</div>
+        <div class="check-item" id="pack-4"><div class="check-box" onclick="togglePack('pack-4')">✓</div> 4 AA / AAA Batteries (for fairy lights)</div>
+        <div class="check-item" id="pack-5"><div class="check-box" onclick="togglePack('pack-5')">✓</div> Small Knife, 2 Forks & Plates (for cake)</div>
+        <div class="check-item" id="pack-6"><div class="check-box" onclick="togglePack('pack-6')">✓</div> Driver's License / Photo ID (for Train Will-Call)</div>
+        <div class="check-item" id="pack-7"><div class="check-box" onclick="togglePack('pack-7')">✓</div> Warm Jackets & Sweaters (mountain morning temps 32-45°F)</div>
+        <div class="check-item" id="pack-8"><div class="check-box" onclick="togglePack('pack-8')">✓</div> Phone Car Charger & Mount</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Leaflet Real Interactive Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    // Initialize Real Leaflet Interactive Map
+    const map = L.map('trip-map', {
+      zoomControl: true,
+      scrollWheelZoom: false
+    }).setView([43.0, -72.0], 7);
+
+    // Official OpenStreetMap Full Tile Layer (100% Free, No Watermark, No API Key Required)
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Real Highway Waypoint Path (Queens -> NH -> VT -> Queens)
+    const waypoints = [
+      [40.7027, -73.7890], // 1. Jamaica, Queens
+      [41.3083, -72.9279], // New Haven, CT
+      [41.7658, -72.6734], // Hartford, CT
+      [43.2081, -71.5376], // Concord, NH
+      [44.0537, -71.1284], // 2. North Conway, NH (Swiss Chalets)
+      [44.2189, -71.4116], // 3. Crawford Notch
+      [44.0041, -71.5644], // Kancamagus Pass
+      [44.1772, -71.6836], // Artists Bluff (Franconia)
+      [44.3067, -71.7684], // 4. Littleton, NH (Eastgate)
+      [44.5519, -72.7933], // 5. Smugglers Notch Pass
+      [44.4654, -72.6874], // Stowe Village
+      [44.3378, -72.7562], // Cold Hollow (Waterbury)
+      [43.6262, -72.5184], // 6. Woodstock, VT
+      [43.6487, -72.3187], // 7. White River Jct (Super 8)
+      [43.6373, -72.4173], // 8. Quechee Gorge
+      [42.1015, -72.5898], // Springfield, MA
+      [40.7027, -73.7890]  // Return to Queens
+    ];
+
+    // Draw glowing orange route line
+    const routeLine = L.polyline(waypoints, {
+      color: '#ea580c',
+      weight: 5,
+      opacity: 0.95
+    }).addTo(map);
+
+    // Custom Map Markers with Popups
+    const stops = [
+      { name: "1. Queens, NY (Start/End)", coords: [40.7027, -73.7890], label: "1" },
+      { name: "2. North Conway (Night 1 & Birthday 🎂)", coords: [44.0537, -71.1284], label: "2" },
+      { name: "3. Crawford Notch Train 🚂", coords: [44.2189, -71.4116], label: "3" },
+      { name: "4. Littleton, NH (Night 2)", coords: [44.3067, -71.7684], label: "4" },
+      { name: "5. Stowe & Smugglers' Notch 🍁", coords: [44.5519, -72.7933], label: "5" },
+      { name: "6. Woodstock & Sugarbush Farm 🧀", coords: [43.6262, -72.5184], label: "6" },
+      { name: "7. White River Jct (Night 3)", coords: [43.6487, -72.3187], label: "7" },
+      { name: "8. Quechee Gorge Bridge 🌉", coords: [43.6373, -72.4173], label: "8" }
+    ];
+
+    stops.forEach(s => {
+      const customIcon = L.divIcon({
+        className: 'custom-map-marker',
+        html: s.label,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+      L.marker(s.coords, { icon: customIcon }).addTo(map).bindPopup("<strong>" + s.name + "</strong>");
+    });
+
+    // Real Animated Moving Car along Waypoints
+    let carIndex = 0;
+    const carIcon = L.divIcon({
+      className: 'custom-car-marker',
+      html: '🚗',
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+
+    const carMarker = L.marker(waypoints[0], { icon: carIcon }).addTo(map);
+
+    function animateCar() {
+      carIndex = (carIndex + 1) % waypoints.length;
+      carMarker.setLatLng(waypoints[carIndex]);
+      setTimeout(animateCar, 1000);
+    }
+    animateCar();
+
+    // Fit map bounds properly
+    setTimeout(() => {
+      map.invalidateSize();
+      map.fitBounds(routeLine.getBounds(), { padding: [40, 40] });
+    }, 200);
+
+    // Interactive Checklist Functionality
+    function toggleStep(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.toggle('completed');
+        const isDone = el.classList.contains('completed');
+        localStorage.setItem('trip_step_' + id, isDone ? '1' : '0');
+      }
+    }
+
+    function togglePack(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.toggle('done');
+        const isDone = el.classList.contains('done');
+        localStorage.setItem('trip_pack_' + id, isDone ? '1' : '0');
+      }
+    }
+
+    // Load saved checklist state on page open
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.timeline-item').forEach(el => {
+        const id = el.id;
+        if (id && localStorage.getItem('trip_step_' + id) === '1') {
+          el.classList.add('completed');
+        }
+      });
+
+      document.querySelectorAll('.check-item').forEach(el => {
+        const id = el.id;
+        if (id) {
+          const val = localStorage.getItem('trip_pack_' + id);
+          if (val === '1') el.classList.add('done');
+          else if (val === '0') el.classList.remove('done');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
